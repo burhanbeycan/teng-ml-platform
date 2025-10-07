@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TENG ML Platform - Predict TENG Performance</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🔋 TENG Machine Learning Platform</h1>
+            <p class="subtitle">Predict Triboelectric Nanogenerator Performance Without Experiments</p>
+            <p class="info">14 Materials | 81 Descriptors | ML-Powered Predictions</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('predictor')">⚡ Performance Predictor</button>
+            <button class="tab-btn" onclick="showTab('database')">📊 Material Database</button>
+            <button class="tab-btn" onclick="showTab('camx')">🔬 CAMX Research</button>
+            <button class="tab-btn" onclick="showTab('about')">ℹ️ About</button>
+        </div>
+
+        <!-- Tab 1: Performance Predictor -->
+        <div id="predictor" class="tab-content active">
+            <h2>Performance Predictor</h2>
+            <p class="description">Adjust material properties and device parameters to predict TENG performance</p>
+            
+            <div class="predictor-grid">
+                <!-- Input Section -->
+                <div class="input-section">
+                    <h3>Material Properties</h3>
+                    
+                    <div class="input-group">
+                        <label>Polymer Type</label>
+                        <select id="polymer" onchange="loadPreset()">
+                            <option value="CA">Cellulose Acetate (CA)</option>
+                            <option value="PTFE">PTFE</option>
+                            <option value="PVDF">PVDF</option>
+                            <option value="PI">Polyimide (PI)</option>
+                            <option value="PDMS">PDMS</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nanofiller Type</label>
+                        <select id="filler">
+                            <option value="None">None</option>
+                            <option value="MXene">MXene</option>
+                            <option value="Ag">Silver (Ag)</option>
+                            <option value="CNT">Carbon Nanotubes</option>
+                            <option value="Graphene">Graphene</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nanofiller Loading (%): <span id="loading-val">5</span></label>
+                        <input type="range" id="loading" min="0" max="15" value="5" step="0.5" 
+                               oninput="updateValue('loading')">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Film Thickness (μm): <span id="thickness-val">100</span></label>
+                        <input type="range" id="thickness" min="20" max="200" value="100" step="5" 
+                               oninput="updateValue('thickness')">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Dielectric Constant: <span id="dielectric-val">10</span></label>
+                        <input type="range" id="dielectric" min="2" max="30" value="10" step="0.5" 
+                               oninput="updateValue('dielectric')">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Surface Roughness (nm): <span id="roughness-val">30</span></label>
+                        <input type="range" id="roughness" min="5" max="100" value="30" step="5" 
+                               oninput="updateValue('roughness')">
+                    </div>
+
+                    <h3>Device Parameters</h3>
+
+                    <div class="input-group">
+                        <label>Frequency (Hz): <span id="freq-val">3</span></label>
+                        <input type="range" id="freq" min="1" max="10" value="3" step="0.5" 
+                               oninput="updateValue('freq')">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Applied Force (N): <span id="force-val">30</span></label>
+                        <input type="range" id="force" min="5" max="100" value="30" step="5" 
+                               oninput="updateValue('force')">
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="predict()">🔮 Predict Performance</button>
+                        <button class="btn-secondary" onclick="loadCAMXPreset()">📌 Load CAMX Data</button>
+                        <button class="btn-secondary" onclick="resetInputs()">🔄 Reset</button>
+                    </div>
+                </div>
+
+                <!-- Output Section -->
+                <div class="output-section">
+                    <h3>Predicted Performance</h3>
+                    
+                    <div class="prediction-card">
+                        <div class="metric">
+                            <span class="metric-label">Open Circuit Voltage</span>
+                            <span class="metric-value" id="pred-voc">---</span>
+                            <span class="metric-unit">V</span>
+                        </div>
+                    </div>
+
+                    <div class="prediction-card">
+                        <div class="metric">
+                            <span class="metric-label">Short Circuit Current</span>
+                            <span class="metric-value" id="pred-isc">---</span>
+                            <span class="metric-unit">μA</span>
+                        </div>
+                    </div>
+
+                    <div class="prediction-card highlight">
+                        <div class="metric">
+                            <span class="metric-label">Power Density</span>
+                            <span class="metric-value" id="pred-power">---</span>
+                            <span class="metric-unit">W/m²</span>
+                        </div>
+                    </div>
+
+                    <div class="prediction-card">
+                        <div class="metric">
+                            <span class="metric-label">Energy Density</span>
+                            <span class="metric-value" id="pred-energy">---</span>
+                            <span class="metric-unit">J/cm²</span>
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <h4>📊 Model Information</h4>
+                        <p><strong>Current R² Scores:</strong></p>
+                        <ul>
+                            <li>Isc: 0.90 ✅ (Excellent)</li>
+                            <li>Power: 0.64 (Good)</li>
+                            <li>Voc: 0.07 (Improving with more data)</li>
+                            <li>Energy: 0.40 (Improving with more data)</li>
+                        </ul>
+                        <p><strong>Training Data:</strong> 14 materials, 81 descriptors</p>
+                        <p><em>Note: Predictions will improve significantly when database expands to 50+ materials (target R² > 0.90)</em></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Material Database -->
+        <div id="database" class="tab-content">
+            <h2>Material Database</h2>
+            <p class="description">Browse 14 TENG materials with complete characterization</p>
+            
+            <div class="database-table">
+                <table id="materials-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Material</th>
+                            <th>Filler</th>
+                            <th>Loading (%)</th>
+                            <th>Voc (V)</th>
+                            <th>Isc (μA)</th>
+                            <th>Power (W/m²)</th>
+                            <th>Reference</th>
+                        </tr>
+                    </thead>
+                    <tbody id="materials-tbody">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box">
+                <h4>📚 Database Statistics</h4>
+                <ul>
+                    <li><strong>Total Materials:</strong> 14</li>
+                    <li><strong>CAMX Research:</strong> 4 materials (CA-MXene composites)</li>
+                    <li><strong>Xu et al. 2025:</strong> 10 materials (various polymers)</li>
+                    <li><strong>Descriptors:</strong> 81 (60 RDKit + 21 material/device properties)</li>
+                    <li><strong>Performance Range:</strong> 0.18-2.0 W/m²</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tab 3: CAMX Research -->
+        <div id="camx" class="tab-content">
+            <h2>CAMX Research Integration</h2>
+            <p class="description">Waste-Derived CA-MXene Composites for High-Performance TENGs</p>
+            
+            <div class="camx-grid">
+                <div class="camx-card">
+                    <h3>🎯 Research Highlights</h3>
+                    <ul>
+                        <li><strong>Novel Approach:</strong> Covalently-bonded CA-MXene composites</li>
+                        <li><strong>Waste Valorization:</strong> CA extracted from cigarette filters</li>
+                        <li><strong>TEMPO Oxidation:</strong> Regioselective C6 carboxylation</li>
+                        <li><strong>MXene Functionalization:</strong> APTES silylation for amine groups</li>
+                        <li><strong>EDC/NHS Coupling:</strong> Amide bond formation</li>
+                        <li><strong>Performance:</strong> Up to 1.6 W/m² (240 V, 14 μA)</li>
+                    </ul>
+                </div>
+
+                <div class="camx-card">
+                    <h3>📊 CAMX Materials Performance</h3>
+                    <table class="camx-table">
+                        <tr>
+                            <th>Material</th>
+                            <th>Voc (V)</th>
+                            <th>Isc (μA)</th>
+                            <th>Power (W/m²)</th>
+                        </tr>
+                        <tr>
+                            <td>CA pristine</td>
+                            <td>90</td>
+                            <td>5</td>
+                            <td>0.35</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td>CAMX_a (70 μm)</td>
+                            <td>200</td>
+                            <td>12</td>
+                            <td>1.20</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td>CAMX_b (90 μm)</td>
+                            <td>220</td>
+                            <td>13</td>
+                            <td>1.40</td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td>CAMX optimized</td>
+                            <td>240</td>
+                            <td>14</td>
+                            <td>1.60</td>
+                        </tr>
+                    </table>
+                    <p class="improvement">⚡ <strong>4.6× improvement</strong> vs pristine CA!</p>
+                </div>
+
+                <div class="camx-card">
+                    <h3>🔬 Key Advantages</h3>
+                    <ul>
+                        <li>✅ <strong>Covalent bonding</strong> vs physical blending</li>
+                        <li>✅ <strong>Superior dispersion</strong> of MXene nanosheets</li>
+                        <li>✅ <strong>Enhanced interfacial</strong> charge transfer</li>
+                        <li>✅ <strong>Improved mechanical</strong> properties</li>
+                        <li>✅ <strong>Biodegradable</strong> and sustainable</li>
+                        <li>✅ <strong>Waste valorization</strong> (4.5 trillion cigarette butts/year)</li>
+                    </ul>
+                </div>
+
+                <div class="camx-card">
+                    <h3>📖 Publication Details</h3>
+                    <p><strong>Authors:</strong> Burhan Beycan, Husnu Emrah Unalan</p>
+                    <p><strong>Institution:</strong> Middle East Technical University (METU)</p>
+                    <p><strong>Department:</strong> Metallurgical and Materials Engineering</p>
+                    <p><strong>Target Journal:</strong> Nano Energy (IF: 16.8)</p>
+                    <p><strong>Status:</strong> Manuscript in preparation</p>
+                    <p><strong>Manuscript:</strong> 16,644 words, comprehensive polymer chemistry analysis</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: About -->
+        <div id="about" class="tab-content">
+            <h2>About TENG ML Platform</h2>
+            
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>🎯 Purpose</h3>
+                    <p>This platform enables researchers to <strong>predict TENG performance without experiments</strong> using machine learning trained on comprehensive material and device descriptors.</p>
+                    <p>By adjusting material properties and device parameters, you can explore the design space and optimize TENG performance before synthesis.</p>
+                </div>
+
+                <div class="about-card">
+                    <h3>📊 Current Database</h3>
+                    <ul>
+                        <li><strong>Materials:</strong> 14 (expandable to 100+)</li>
+                        <li><strong>Descriptors:</strong> 81 (expandable to 200+)</li>
+                        <li><strong>Polymer types:</strong> CA, PTFE, PVDF, PI, PC, PP, PVC, PDMS</li>
+                        <li><strong>Nanofillers:</strong> MXene, Ag, Al, F</li>
+                        <li><strong>Performance range:</strong> 0.18-2.0 W/m²</li>
+                    </ul>
+                </div>
+
+                <div class="about-card">
+                    <h3>🤖 ML Models</h3>
+                    <ul>
+                        <li><strong>Algorithms:</strong> Random Forest, Gradient Boosting</li>
+                        <li><strong>Targets:</strong> Voc, Isc, Power Density, Energy Density</li>
+                        <li><strong>Features:</strong> 60 RDKit descriptors + 21 material/device properties</li>
+                        <li><strong>Current R²:</strong> 0.07-0.90 (varies by target)</li>
+                        <li><strong>Target R²:</strong> > 0.90 with 50+ materials</li>
+                    </ul>
+                </div>
+
+                <div class="about-card">
+                    <h3>🔬 Research Team</h3>
+                    <p><strong>Burhan Beycan</strong><br>PhD Candidate<br>Materials Engineering, METU</p>
+                    <p><strong>Prof. Husnu Emrah Unalan</strong><br>Supervisor<br>Metallurgical and Materials Engineering, METU</p>
+                </div>
+
+                <div class="about-card">
+                    <h3>📚 Key References</h3>
+                    <ul>
+                        <li>Xu et al., Nano Energy 2025 (GNN-based TENG optimization)</li>
+                        <li>Doganay & Ünalan, Nano Energy 2025 (TENG review)</li>
+                        <li>Doganay et al., Nano Energy 2021 (Fabric TENG, 1.25 W/m²)</li>
+                        <li>Beycan & Ünalan, 2025 (CAMX composites, in preparation)</li>
+                    </ul>
+                </div>
+
+                <div class="about-card">
+                    <h3>🚀 Future Development</h3>
+                    <ul>
+                        <li>Expand database to 50-100 materials</li>
+                        <li>Add 120+ descriptors (reach 200+ total)</li>
+                        <li>Achieve R² > 0.95 for all targets</li>
+                        <li>Integrate experimental validation</li>
+                        <li>Deploy as community tool</li>
+                        <li>Publish ML methodology paper</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>📦 Complete Package Available</h4>
+                <p>The complete TENG ML platform package includes:</p>
+                <ul>
+                    <li>Database (14 materials, 81 descriptors, Excel format)</li>
+                    <li>Trained ML models (4 models: Voc, Isc, Power, Energy)</li>
+                    <li>Python scripts (database builder, ML training)</li>
+                    <li>Comprehensive documentation (README, QUICKSTART, DELIVERABLES)</li>
+                    <li>Source code for expansion and customization</li>
+                </ul>
+                <p><strong>Contact:</strong> Burhan Beycan, METU Materials Engineering</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 TENG ML Platform | METU Materials Engineering | Burhan Beycan & Prof. Emrah Ünalan</p>
+            <p>For research and educational purposes | Manuscript in preparation for Nano Energy</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

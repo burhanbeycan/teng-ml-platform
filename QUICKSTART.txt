@@ -1,0 +1,118 @@
+========================================
+TENG ML PLATFORM - GITHUB PAGES DEPLOYMENT
+Quick Start Guide (5 Minutes)
+========================================
+
+STEP 1: CREATE GITHUB REPOSITORY
+---------------------------------
+1. Go to: https://github.com/new
+2. Repository name: teng-ml-platform
+3. Description: TENG Machine Learning Platform - Predict TENG Performance
+4. Set to: PUBLIC (required for free GitHub Pages)
+5. Do NOT check "Initialize with README"
+6. Click "Create repository"
+
+STEP 2: UPLOAD FILES
+--------------------
+Method A - Web Interface (Easiest):
+1. On your new repository page, click "uploading an existing file"
+2. Extract the ZIP file you received
+3. Drag and drop these 5 files:
+   - index.html
+   - style.css
+   - script.js
+   - README.md
+   - DEPLOYMENT_GUIDE.md
+4. Commit message: "Initial commit - TENG ML Platform"
+5. Click "Commit changes"
+
+Method B - Command Line (If you have Git):
+1. Extract ZIP file
+2. cd teng_github_deploy
+3. git init
+4. git add .
+5. git commit -m "Initial commit"
+6. git remote add origin https://github.com/YOURUSERNAME/teng-ml-platform.git
+7. git branch -M main
+8. git push -u origin main
+
+STEP 3: ENABLE GITHUB PAGES
+---------------------------
+1. Go to repository Settings
+2. Click "Pages" in left sidebar
+3. Under "Source":
+   - Branch: main
+   - Folder: / (root)
+4. Click "Save"
+5. Wait 1-2 minutes
+
+STEP 4: ACCESS YOUR WEBSITE
+---------------------------
+Your website will be live at:
+https://YOURUSERNAME.github.io/teng-ml-platform/
+
+(Replace YOURUSERNAME with your actual GitHub username)
+
+========================================
+FILES INCLUDED
+========================================
+✓ index.html          - Main website (4 tabs)
+✓ style.css           - Styling (responsive design)
+✓ script.js           - Functionality (predictions, database)
+✓ README.md           - Documentation
+✓ DEPLOYMENT_GUIDE.md - Detailed deployment guide
+
+========================================
+FEATURES
+========================================
+✓ Performance Predictor (8 adjustable parameters)
+✓ Material Database (14 materials)
+✓ CAMX Research integration
+✓ Real-time predictions
+✓ Mobile-friendly design
+✓ No backend required
+
+========================================
+TROUBLESHOOTING
+========================================
+Website not loading?
+- Wait 2-3 minutes after enabling Pages
+- Check Settings → Pages shows green checkmark
+- Clear browser cache
+
+Predictions not working?
+- Check all 5 files were uploaded
+- File names must be exact (case-sensitive)
+- Open browser console (F12) for errors
+
+Need help?
+- Read DEPLOYMENT_GUIDE.md for detailed instructions
+- Check GitHub Pages docs: https://docs.github.com/en/pages
+
+========================================
+CUSTOMIZATION
+========================================
+To update your website:
+1. Edit files on GitHub (click file → pencil icon)
+2. Make changes
+3. Commit changes
+4. Wait 1-2 minutes for redeployment
+
+To add your email:
+1. Edit README.md
+2. Find "Contact" section
+3. Replace placeholder with your email
+
+========================================
+CONTACT
+========================================
+Burhan Beycan
+METU Materials Engineering
+Prof. Emrah Ünalan's Lab
+
+========================================
+YOUR WEBSITE WILL BE LIVE AT:
+https://YOURUSERNAME.github.io/teng-ml-platform/
+========================================
+
+Good luck! 🚀
